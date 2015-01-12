@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/gulp-image-diff.svg)](http://badge.fury.io/js/gulp-image-diff)
+
 # gulp-image-diff
 
 `gulp-image-diff`, a [gulp](http://gulpjs.com/) plugin, is a image diff'ing tool. We compare pixel by pixel with an option for color tolerance.
