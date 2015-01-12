@@ -1,8 +1,14 @@
 var fs = require('fs-extra');
 var path = require('path');
+
+var Promise = require('promise');
+var outputFile = Promise.denodeify(fs.outputFile);
+
 var through = require('through2');
 var extend = require('extend');
 var gutil = require('gulp-util');
+
+var jsonReporter = require('./lib/json-reporter.js');
 
 var compareImages = require('./lib/compare-images.js');
 var convertToPng = require('./lib/convert-to-png.js');
@@ -62,41 +68,76 @@ var differ = function(options) {
 					var totalPixels = compareImage.width*compareImage.height;
 					var compareResult = compareImages(referenceImage, compareImage, settings.pixelColorTolerance, settings.differenceMapColor);
 
-					console.log('diff:', compareResult.numDifferences, '/', totalPixels, '= ', (compareResult.numDifferences/totalPixels));
+					// Some nice debug info on the diff
+					//console.log('diff:', compareResult.numDifferences, '/', totalPixels, '= ', (compareResult.numDifferences/totalPixels));
 					
 					var analysis = {
 						differences: compareResult.numDifferences,
 						total: totalPixels,
-						disparity: compareResult.numDifferences/totalPixels
+						disparity: compareResult.numDifferences/totalPixels,
+						referenceImage: path.normalize(settings.referenceImage),
+						compareImage: path.relative(chunk.cwd, chunk.path)
 					};
 
 					compareResult.differenceMapImagePromise.then(function(differenceMapImageBuffer) {
-						if(settings.differenceMapImage) {
-							// You can pass a string or function to generate the diff save path
-							// We give you the path of the reference and compare image to construct a path
-							var differenceMapSavePath = settings.differenceMapImage;
-							if(typeof(settings.differenceMapImage) == "function") {
-								differenceMapSavePath = settings.differenceMapImage(path.normalize(settings.referenceImage), path.relative(chunk.cwd, chunk.path));
+
+						var whenImageDealtWithPromise = new Promise(function(resolve, reject) {
+							if(settings.differenceMapImage) {
+								// You can pass a string or function to generate the diff save path
+								// We give you the path of the reference and compare image to construct a path
+								var differenceMapSavePath = settings.differenceMapImage;
+								if(typeof(settings.differenceMapImage) == "function") {
+									differenceMapSavePath = settings.differenceMapImage(analysis.referenceImage, analysis.compareImage);
+								}
+
+								// Save out the difference map
+								outputFile(differenceMapSavePath, differenceMapImageBuffer).then(function(err) {
+									if(err) {
+										err.message = 'Error saving difference image:\n' + err.message;
+										self.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
+									}
+
+									// Add to the analysis if we saved the image
+									analysis.differenceMap = differenceMapSavePath;
+
+								}).done(function() {
+									resolve();
+								});
+							}
+							else {
+								resolve();
+							}
+						});
+
+
+						whenImageDealtWithPromise.done(function() {
+
+							// Attach some extra data to what we emit in case something else wants to consume down the line
+							// Since we can chain the diffs, we need to maintain all of the analysis's
+							// If array, add to the array
+							if(chunk.analysis instanceof Array) {
+								chunk.analysis.push(analysis);
+							}
+							// If it already exists, make it into an array
+							else if(chunk.analysis) {
+								chunk.analysis = [chunk.analysis, analysis];
+							}
+							// Else, just set it to itself
+							else {
+								chunk.analysis = analysis;
 							}
 
-							// Save out the difference map
-							fs.outputFile(differenceMapSavePath, differenceMapImageBuffer, function(err) {
-								if(err) {
-									err.message = 'Error saving difference image:\n' + err.message;
-									self.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
-								}
-							});
-						}
+							// We don't maintain multiple difference images through chains
+							chunk.differenceMap = differenceMapImageBuffer;
 
-						chunk.analysis = analysis;
-						chunk.differenceMap = differenceMapImageBuffer;
 
-						// Push out the original image
-						// So you can pipe it multiple times into the diff plugin against different references
-						this.push(chunk);
+							// Push out the original image
+							// So you can pipe it multiple times into the diff plugin against different references
+							self.push(chunk);
 
-						// "call callback when the transform operation is complete."
-						return cb();
+							// "call callback when the transform operation is complete."
+							return cb();
+						});
 
 
 					}, function(err) {
@@ -131,3 +172,4 @@ var differ = function(options) {
 
 
 module.exports = differ;
+module.exports.jsonReporter = jsonReporter;

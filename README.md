@@ -7,7 +7,7 @@ We also emit the raw data and percentage of disparity in `analysis`, see the [Wh
 
 # Install
 
-## Latest Version: 0.1.0
+## Latest Version: 0.2.0
 
 Currently on GitHub.
 ```
@@ -56,6 +56,34 @@ gulp.task('diff-images', function() {
 ```
 
 
+# Reporting/Logging/Generating JSON
+
+`gulp-image-diff` includes `imageDiff.jsonReporter()` which you can use to pipe the diff analysis into and generate a JSON file. 
+
+Since we chain the analysis, the JSON reporter will be able to pick up all analysis in the consecutive chain.
+
+```
+var gulp = require('gulp');
+var imageDiff = require('gulp-image-diff');
+
+gulp.task('diff-images', function() {
+	return gulp.src(['icon-i.png', 'icon-o.png', 'icon-c.png'])
+		.pipe(imageDiff({
+			referenceImage: 'test-images/icon-reference.png',
+			differenceMapImage: './diff1.png'
+		}))
+		.pipe(imageDiff({
+			referenceImage: 'test-images/icon-reference2.png',
+			differenceMapImage: './diff2.png'
+		}))
+		.pipe(imageDiff.jsonReporter())
+		.pipe(gulp.dest('./diff-analysis-report.json'));
+});
+```
+
+
+
+
 # Options
 
  - `options`: object - hash of options
@@ -88,8 +116,11 @@ gulp.task('diff-images', function() {
 We also attach an `analysis` containing the raw data of differences and `differenceMap` which is a buffer of the difference image in case you want to consume it later down the pipe.
 
  - Gulp [vinyl file](https://www.npmjs.com/package/vinyl). We emit whatever you passed in (untouched).
-	 - `analysis`: object - hash of data
+	 - `analysis`: object - hash of data that is chained through out multiple diff calls
 	 	 - `differences`: number - compareResult.numDifferences,
 		 - `total`: number - total amount of pixels in the reference image,
 		 - `disparity`: number - 0-1 percentage value. This is a just a shortcut for `differences/total`
+		 - `referenceImage`: string - path of the reference image used in the diff
+		 - `compareImage`: string - path of the compare image used in the diff
+		 - *`differenceMap`: string - path to the difference map image, only if saved successfully
 	 - `differenceMap`: buffer - The difference png image.
