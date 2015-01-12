@@ -122,5 +122,5 @@ We also attach an `analysis` containing the raw data of differences and `differe
 		 - `disparity`: number - 0-1 percentage value. This is a just a shortcut for `differences/total`
 		 - `referenceImage`: string - path of the reference image used in the diff
 		 - `compareImage`: string - path of the compare image used in the diff
-		 - *`differenceMap`: string - path to the difference map image, only if saved successfully
+		 - *`differenceMap`: string - path to the difference map image, only available if saved successfully
 	 - `differenceMap`: buffer - The difference png image.
