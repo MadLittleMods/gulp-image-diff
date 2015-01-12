@@ -1,0 +1,21 @@
+{
+  "name": "gulp-image-diff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "extend": "^2.0.0",
+    "fs-extra": "^0.14.0",
+    "gulp-util": "^3.0.2",
+    "pngjs": "^0.4.0",
+    "pngparse": "^2.0.1",
+    "promise": "^6.0.1",
+    "stream-to-buffer": "^0.1.0",
+    "through2": "^0.6.3"
+  }
+}
