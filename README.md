@@ -11,14 +11,17 @@ We also emit the raw data and percentage of disparity in `analysis`, see the [Wh
 
 Currently on GitHub.
 ```
-npm install MadLittleMods/gulp-css-spriter
+npm install MadLittleMods/gulp-image-diff
 ```
 
 
 # Usage
 
 ```
-gulp.task('diff-images-test', function() {
+var gulp = require('gulp');
+var imageDiff = require('gulp-image-diff');
+
+gulp.task('diff-images', function() {
 	return gulp.src(['my-image.png'])
 		.pipe(imageDiff({
 			referenceImage: 'reference.png',
@@ -32,7 +35,10 @@ gulp.task('diff-images-test', function() {
 Since `gulp-image-diff` is a pass-through and emits an untouched image, you can pipe it multiple times into the diff against different references.
 
 ```
-gulp.task('diff-images-test', function() {
+var gulp = require('gulp');
+var imageDiff = require('gulp-image-diff');
+
+gulp.task('diff-images', function() {
 	return gulp.src(['my-image.png'])
 		.pipe(imageDiff({
 			referenceImage: 'reference1.png',
@@ -68,7 +74,7 @@ gulp.task('diff-images-test', function() {
 
 
 
-### Notes
+### Notes:
 
  - We use rgba 0-255 range colors.
  - The reference image is the master and we iterate over the reference image pixels. If the compare image doesn't have a pixel at that coordinate, we just skip to the next(does not increment the difference counter).
@@ -85,5 +91,5 @@ We also attach an `analysis` containing the raw data of differences and `differe
 	 - `analysis`: object - hash of data
 	 	 - `differences`: number - compareResult.numDifferences,
 		 - `total`: number - total amount of pixels in the reference image,
-		 - disparity: number - 0-1 percentage value. This is a just a shortcut for `differences/total`
+		 - `disparity`: number - 0-1 percentage value. This is a just a shortcut for `differences/total`
 	 - `differenceMap`: buffer - The difference png image.
