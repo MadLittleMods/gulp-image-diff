@@ -56,7 +56,7 @@ gulp.task('diff-images', function() {
 ```
 
 
-# Reporting/Logging/Generating JSON
+### Reporting/Logging/Generating JSON
 
 `gulp-image-diff` includes `imageDiff.jsonReporter()` which you can use to pipe the diff analysis into and generate a JSON file. 
 
