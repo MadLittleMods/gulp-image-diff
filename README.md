@@ -2,6 +2,8 @@
 
 `gulp-image-diff`, a [gulp](http://gulpjs.com/) plugin, is a image diff'ing tool. We compare pixel by pixel with an option for color tolerance.
 
+We also emit the raw data and percentage of disparity in `analysis`, see the [What we emit section](#what-we-emit).
+
 
 # Install
 
