@@ -1,14 +1,29 @@
 {
   "name": "gulp-image-diff",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Image diff'ing tool that compares pixel by pixel.",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MadLittleMods/gulp-image-diff.git"
+  },
+  "keywords": [
+    "diff",
+    "image-diff",
+    "difference"
+    "image",
+    "compare",
+    "gulp",
+    "gulpplugin",
+    "gulpfriendly"
+  ],
+  "author": "Eric Eastwood <contact@ericeastwood.com> (http://ericeastwood.com/)",
+  "license": "MIT",
+  "bugs": "https://github.com/MadLittleMods/gulp-image-diff/issues",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "extend": "^2.0.0",
     "fs-extra": "^0.14.0",
     "gulp-util": "^3.0.2",
