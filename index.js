@@ -37,7 +37,10 @@ var differ = function(options) {
 			g: 0,
 			b: 0,
 			a: 200
-		}
+		},
+		// Log to the console
+		// You can also hook onto `.on('log', ...)` events which are emitted no matter what
+		logProgress: false
 	};
 
 	var settings = extend({}, defaults, options);
@@ -130,6 +133,16 @@ var differ = function(options) {
 							// We don't maintain multiple difference images through chains
 							chunk.differenceMap = differenceMapImageBuffer;
 
+
+							var logMessage = 'Diff complete: ' + analysis.differences + '/' + analysis.total + ' = ' + gutil.colors.cyan(analysis.differences / analysis.total) + ' -- ' + gutil.colors.magenta(analysis.compareImage) + ' compared to ' + gutil.colors.magenta(analysis.referenceImage);
+							
+							// Emit some log events for anyone to catch
+							self.emit('log', logMessage);
+
+							// We also have a setting to log to the console
+							if(settings.logProgress) {
+								gutil.log(logMessage);
+							}
 
 							// Push out the original image
 							// So you can pipe it multiple times into the diff plugin against different references

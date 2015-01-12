@@ -9,7 +9,7 @@ We also emit the raw data and percentage of disparity in `analysis`, see the [Wh
 
 # Install
 
-## Latest Version: 0.2.0
+## Latest Version: 0.2.1
 
 Currently on GitHub.
 ```
@@ -27,6 +27,8 @@ gulp.task('diff-images', function() {
 	return gulp.src(['my-image.png'])
 		.pipe(imageDiff({
 			referenceImage: 'reference.png',
+			// Equivalent to 10% tolerance between reference and compare pixels
+			pixelColorTolerance: 0.10,
 			differenceMapImage: './diff.png'
 		}));
 });
@@ -56,6 +58,45 @@ gulp.task('diff-images', function() {
 		}));
 });
 ```
+
+### Logging
+
+You can use the `logProgress` setting to output some analysis info every time a diff completes.
+
+```
+var gulp = require('gulp');
+var imageDiff = require('gulp-image-diff');
+
+gulp.task('diff-images', function() {
+	return gulp.src(['my-image.png'])
+		.pipe(imageDiff({
+			referenceImage: 'reference.png',
+			logProgress: true
+		}));
+});
+```
+
+You can also hook onto `.on('log', ...)` events which are emitted no matter what.
+
+```
+var gulp = require('gulp');
+var imageDiff = require('gulp-image-diff');
+
+gulp.task('diff-images', function() {
+	return gulp.src(['my-image.png'])
+		.pipe(imageDiff({
+			referenceImage: 'reference.png'
+		}))
+		.on('log', function(message) {
+			console.log(message);
+		})
+		// We are just showing that you can do more below the `.on('log', ...)`.
+		// Saving it out the analysis to JSON (see example below for more info)
+		.pipe(imageDiff.jsonReporter())
+		.pipe(gulp.dest('./diff-analysis-report.json'));
+});
+```
+
 
 
 ### Reporting/Logging/Generating JSON
@@ -101,6 +142,8 @@ gulp.task('diff-images', function() {
 	 - `differenceMapColor`: object - The color for each pixel used in the `differenceMapImage` that is not within tolerance.
 	 	 - Default: `{ r: 255, g: 0, b: 0, a: 200 }`
 	 	 - If transparent, it will be alpha-blended with the reference image.
+	 - `logProgress`: bool - Log each diff as it completes. Prints out some of the analysis.
+	 	 - You can also hook onto `.on('log', ...)` events which are emitted no matter what.
 
 
 
@@ -126,3 +169,15 @@ We also attach an `analysis` containing the raw data of differences and `differe
 		 - `compareImage`: string - path of the compare image used in the diff
 		 - *`differenceMap`: string - path to the difference map image, only available if saved successfully
 	 - `differenceMap`: buffer - The difference png image.
+
+## Events
+
+### `.on('log', function(message) { })`
+
+See [Logging example](#logging) for a nice code example.
+
+The message is the same message outputted to the console when `logProgress` is true.
+
+### `.on('error', function(err) { })`
+
+A normal gulp error. There are a variety of errors. See source code for more details.
