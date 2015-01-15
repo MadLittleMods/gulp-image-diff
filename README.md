@@ -9,7 +9,7 @@ We also emit the raw data and percentage of disparity in `analysis`, see the [Wh
 
 # Install
 
-## Latest Version: 0.2.1
+## Latest Version: 0.2.2
 
 Currently on GitHub.
 ```
@@ -136,14 +136,14 @@ gulp.task('diff-images', function() {
  	 	 - Default: 0.01
  	 	 - 0 means no tolerance. Pixels need to be exactly the same
  	 	 - This option allows for slight differences in aliasing in for example text
-	 - `differenceMapImage`: string|function - Pass a string path+filename or a function that returns string path+filename of where to save the difference image
-	 	 - Default: null
-	 	 - `function(referencePath, compareImagePath)`: Return string path+filename
-	 - `differenceMapColor`: object - The color for each pixel used in the `differenceMapImage` that is not within tolerance.
-	 	 - Default: `{ r: 255, g: 0, b: 0, a: 200 }`
-	 	 - If transparent, it will be alpha-blended with the reference image.
-	 - `logProgress`: bool - Log each diff as it completes. Prints out some of the analysis.
-	 	 - You can also hook onto `.on('log', ...)` events which are emitted no matter what.
+ 	 - `differenceMapImage`: string|function - Pass a string path+filename or a function that returns string path+filename of where to save the difference image
+ 	 	 - Default: null
+ 	 	 - `function(referencePath, compareImagePath)`: Return string path+filename
+ 	 - `differenceMapColor`: object - The color for each pixel used in the `differenceMapImage` that is not within tolerance.
+ 	 	 - Default: `{ r: 255, g: 0, b: 0, a: 200 }`
+ 	 	 - If transparent, it will be alpha-blended with the reference image.
+ 	 - `logProgress`: bool - Log each diff as it completes. Prints out some of the analysis.
+ 	 	 - You can also hook onto `.on('log', ...)` events which are emitted no matter what.
 
 
 
@@ -161,14 +161,14 @@ gulp.task('diff-images', function() {
 We also attach an `analysis` containing the raw data of differences and `differenceMap` which is a buffer of the difference image in case you want to consume it later down the pipe.
 
  - Gulp [vinyl file](https://www.npmjs.com/package/vinyl). We emit whatever you passed in (untouched).
-	 - `analysis`: object - hash of data that is chained through out multiple diff calls
-	 	 - `differences`: number - compareResult.numDifferences,
-		 - `total`: number - total amount of pixels in the reference image,
-		 - `disparity`: number - 0-1 percentage value. This is a just a shortcut for `differences/total`
-		 - `referenceImage`: string - path of the reference image used in the diff
-		 - `compareImage`: string - path of the compare image used in the diff
-		 - *`differenceMap`: string - path to the difference map image, only available if saved successfully
-	 - `differenceMap`: buffer - The difference png image.
+ 	 - `analysis`: object - hash of data that is chained through out multiple diff calls
+ 	 	 - `differences`: number - compareResult.numDifferences,
+ 	 	 - `total`: number - total amount of pixels in the reference image,
+ 	 	 - `disparity`: number - 0-1 percentage value. This is a just a shortcut for `differences/total`
+ 	 	 - `referenceImage`: string - path of the reference image used in the diff
+ 	 	 - `compareImage`: string - path of the compare image used in the diff
+ 	 	 - *`differenceMap`: string - path to the difference map image, only available if saved successfully
+ 	 - `differenceMap`: buffer - The difference png image.
 
 ## Events
 
