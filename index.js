@@ -89,7 +89,7 @@ var differ = function(options) {
 								// You can pass a string or function to generate the diff save path
 								// We give you the path of the reference and compare image to construct a path
 								var differenceMapSavePath = settings.differenceMapImage;
-								if(typeof(settings.differenceMapImage) == "function") {
+								if(typeof(settings.differenceMapImage) === "function") {
 									differenceMapSavePath = settings.differenceMapImage(analysis.referenceImage, analysis.compareImage);
 								}
 
