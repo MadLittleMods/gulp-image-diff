@@ -9,7 +9,7 @@ We also emit the raw data and percentage of disparity in `analysis`, see the [Wh
 
 # Install
 
-## Latest Version: 0.2.2
+## Latest Version: 0.3.0
 
 Currently on GitHub.
 ```
@@ -138,6 +138,7 @@ gulp.task('diff-images', function() {
  	 	 - This option allows for slight differences in aliasing in for example text
  	 - `differenceMapImage`: string|function - Pass a string path+filename or a function that returns string path+filename of where to save the difference image
  	 	 - Default: null
+ 	 	 - If function the compare and reference paths are provided `function(referencePath, comparePath)`. Your function should return a string path+filename
  	 	 - `function(referencePath, compareImagePath)`: Return string path+filename
  	 - `differenceMapColor`: object - The color for each pixel used in the `differenceMapImage` that is not within tolerance.
  	 	 - Default: `{ r: 255, g: 0, b: 0, a: 200 }`
@@ -181,3 +182,16 @@ The message is the same message outputted to the console when `logProgress` is t
 ### `.on('error', function(err) { })`
 
 A normal gulp error. There are a variety of errors. See source code for more details.
+
+
+
+# Testing
+
+We have a series of unit tests. We use [Mocha](http://mochajs.org/).
+
+Install Mocha globally:
+```
+npm install -g mocha
+```
+
+Run tests with: `mocha` or `npm test`

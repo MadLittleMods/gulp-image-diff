@@ -1,8 +1,8 @@
 var fs = require('fs-extra');
 var path = require('path');
 
-var Promise = require('promise');
-var outputFile = Promise.denodeify(fs.outputFile);
+var Promise = require('bluebird');
+var outputFile = Promise.promisify(fs.outputFile);
 
 var through = require('through2');
 var extend = require('extend');
@@ -71,9 +71,6 @@ var differ = function(options) {
 					var totalPixels = compareImage.width*compareImage.height;
 					var compareResult = compareImages(referenceImage, compareImage, settings.pixelColorTolerance, settings.differenceMapColor);
 
-					// Some nice debug info on the diff
-					//console.log('diff:', compareResult.numDifferences, '/', totalPixels, '= ', (compareResult.numDifferences/totalPixels));
-					
 					var analysis = {
 						differences: compareResult.numDifferences,
 						total: totalPixels,
@@ -94,18 +91,29 @@ var differ = function(options) {
 								}
 
 								// Save out the difference map
-								outputFile(differenceMapSavePath, differenceMapImageBuffer).then(function(err) {
-									if(err) {
+								if(differenceMapSavePath) {
+									outputFile(differenceMapSavePath, differenceMapImageBuffer).then(function() {
+										// Add to the analysis if we saved the image
+										analysis.differenceMap = differenceMapSavePath;
+
+										resolve();
+									}).catch(function(err) {
 										err.message = 'Error saving difference image:\n' + err.message;
 										self.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
-									}
 
-									// Add to the analysis if we saved the image
-									analysis.differenceMap = differenceMapSavePath;
+										//reject(err);
+										// The error was handled by emitting
+										resolve();
+									});
+								}
+								else {
+									var err  = new Error('`options.differenceMapImage` defined but no string path was passed in or returned');
+									self.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
 
-								}).done(function() {
+									//reject(err);
+									// The error was handled by emitting
 									resolve();
-								});
+								}
 							}
 							else {
 								resolve();
@@ -113,7 +121,7 @@ var differ = function(options) {
 						});
 
 
-						whenImageDealtWithPromise.done(function() {
+						whenImageDealtWithPromise.finally(function() {
 
 							// Attach some extra data to what we emit in case something else wants to consume down the line
 							// Since we can chain the diffs, we need to maintain all of the analysis's
@@ -131,6 +139,7 @@ var differ = function(options) {
 							}
 
 							// We don't maintain multiple difference images through chains
+							// We could, but this is just a design decision
 							chunk.differenceMap = differenceMapImageBuffer;
 
 

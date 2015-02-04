@@ -1,6 +1,6 @@
 {
   "name": "gulp-image-diff",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Image diff'ing tool that compares pixel by pixel.",
   "main": "index.js",
   "repository": {
@@ -21,16 +21,23 @@
   "license": "MIT",
   "bugs": "https://github.com/MadLittleMods/gulp-image-diff/issues",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "dependencies": {
+    "bluebird": "^2.9.5",
     "extend": "^2.0.0",
     "fs-extra": "^0.14.0",
     "gulp-util": "^3.0.2",
     "pngjs": "^0.4.0",
     "pngparse": "^2.0.1",
-    "promise": "^6.0.1",
     "stream-to-buffer": "^0.1.0",
     "through2": "^0.6.3"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "chai-as-promised": "^4.1.1",
+    "event-stream": "^3.2.2",
+    "gulp": "^3.8.10",
+    "mocha": "^2.1.0"
   }
 }
