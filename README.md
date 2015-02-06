@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/gulp-image-diff.svg)](http://badge.fury.io/js/gulp-image-diff)
+[![npm version](https://badge.fury.io/js/gulp-image-diff.svg)](http://badge.fury.io/js/gulp-image-diff) [![Build Status](https://travis-ci.org/MadLittleMods/gulp-image-diff.svg)](https://travis-ci.org/MadLittleMods/gulp-image-diff)
 
 # gulp-image-diff
 
