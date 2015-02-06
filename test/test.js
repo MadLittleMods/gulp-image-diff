@@ -133,14 +133,15 @@ describe('gulp-image-diff', function() {
 								differences: 24,
 								total: 100,
 								disparity: 0.24,
-								referenceImage: 'test\\images\\icon-reference.png',
-								compareImage: 'test\\images\\icon-c.png' },
+								referenceImage: path.join('test', 'images', 'icon-reference.png'),
+								compareImage: path.join('test', 'images', 'icon-c.png')
+							},
 							{
 								differences: 32,
 								total: 100,
 								disparity: 0.32,
-								referenceImage: 'test\\images\\icon-reference2.png',
-								compareImage: 'test\\images\\icon-c.png'
+								referenceImage: path.join('test', 'images', 'icon-reference2.png'),
+								compareImage: path.join('test', 'images', 'icon-c.png')
 							}
 						])
 					]));
